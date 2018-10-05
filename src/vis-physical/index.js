@@ -134,12 +134,12 @@ container
     let port = '-';
     const serviceName = _.get(d, 'ServiceName', '');
     if (d.publishedPort && serviceName.includes('_web')) {
-        port = `<a href="http://10.10.1.5:${d.publishedPort}" target="_blank" rel="noreferrer noopener">${d.publishedPort}</a>`;
+        port = `<a style="color: #FFF;" href="http://10.10.1.5:${d.publishedPort}" target="_blank" rel="noreferrer noopener">${d.publishedPort}</a>`;
     } else if (d.publishedPort) {
         port = d.publishedPort;
     }
     const position = d.tag.search('</div>');
-    return [d.tag.slice(0, position), `<br />port: ${port}`, d.tag.slice(position)].join('');
+    return [d.tag.slice(0, position), `<br /><span style="font-size: 12px;">port: ${port}</span>`, d.tag.slice(position)].join('');
 })
 .attr('data-state',(d) => _.kebabCase(d.state))
 
