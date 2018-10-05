@@ -57,14 +57,21 @@ let stringToColor = (str) => {
 
 
 
-let physicalStructProvider = ([initialNodes, initialContainers]) => {
+let physicalStructProvider = ([initialNodes, initialContainers, initialServices]) => {
     let containers = _.map(initialContainers, _.cloneDeep);
+    const services = _.map(initialServices, _.cloneDeep);
     let nodeClusters = [{ uuid: "clusterid", name: "" }];
     let nodes = _.map(initialNodes, _.cloneDeep);
     let root = [];
 
     let addContainer = (container) => {
-            var cloned = Object.assign({}, container);
+            const service = _.find(services, (service) => _.get(service, 'Spec.Name') === container.ServiceName);
+            const ports = _.get(service, 'Endpoint.Ports');
+            let publishedPort = null;
+            if (_.isArray(ports)) {
+                publishedPort = _.get(ports[0], 'PublishedPort');
+            }
+            var cloned = Object.assign({}, container, { publishedPort });
             let NodeID = cloned.NodeID;
             _.find(root, (cluster) => {
                 var node = _.find(cluster.children, { ID: NodeID });

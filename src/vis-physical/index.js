@@ -130,7 +130,17 @@ node
 
 container
     .classed('foreign', (d) => !d.state)
-.attr('tag',(d) => _.kebabCase(d.tag)).html((d) => d.tag)
+.attr('tag',(d) => _.kebabCase(d.tag)).html((d) => {
+    let port = '-';
+    const serviceName = _.get(d, 'ServiceName', '');
+    if (d.publishedPort && serviceName.includes('_web')) {
+        port = `<a href="http://10.10.1.5:${d.publishedPort}" target="_blank" rel="noreferrer noopener">${d.publishedPort}</a>`;
+    } else if (d.publishedPort) {
+        port = d.publishedPort;
+    }
+    const position = d.tag.search('</div>');
+    return [d.tag.slice(0, position), `<br />port: ${port}`, d.tag.slice(position)].join('');
+})
 .attr('data-state',(d) => _.kebabCase(d.state))
 
 
