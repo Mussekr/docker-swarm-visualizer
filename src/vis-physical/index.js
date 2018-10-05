@@ -132,8 +132,9 @@ container
     .classed('foreign', (d) => !d.state)
 .attr('tag',(d) => _.kebabCase(d.tag)).html((d) => {
     let port = '-';
+    const regex = /_web$/gm;
     const serviceName = _.get(d, 'ServiceName', '');
-    if (d.publishedPort && serviceName.includes('_web')) {
+    if (d.publishedPort && regex.exec(serviceName)) {
         port = `<a style="color: #FFF;" href="http://10.10.1.5:${d.publishedPort}" target="_blank" rel="noreferrer noopener">${d.publishedPort}</a>`;
     } else if (d.publishedPort) {
         port = d.publishedPort;
