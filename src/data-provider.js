@@ -78,18 +78,45 @@ let physicalStructProvider = ([initialNodes, initialContainers, initialServices]
                 if (!node) return;
                 var dt = new Date(cloned.UpdatedAt);
                 var color = stringToColor(cloned.ServiceID);
-                let serviceName = cloned.ServiceName;
+                let serviceName = cloned.ServiceName || '';
                 let imageNameRegex = /([^/]+?)(\:([^/]+))?$/;
                 let imageNameMatches = imageNameRegex.exec(cloned.Spec.ContainerSpec.Image);
                 let tagName = imageNameMatches[3];
                 let dateStamp = dt.getDate() + "/" + (dt.getMonth() + 1) + " " + dt.getHours() + ":" + dt.getMinutes();
                 let startState = cloned.Status.State;
 
+                let icon = '';
+                if (serviceName.endsWith('_db')) {
+                    icon = 'mysql';
+                } else if (serviceName.endsWith('_web')) {
+                    icon = 'php';
+                } else if (serviceName.endsWith('_')) {
 
+                }
 
+                try {
+                    serviceName = serviceName.replace(/^suoratyo_/, '');
+                    serviceName = serviceName.replace(/_(web|db)$/, '');
+                    const parts = serviceName.split('_');
+                    if (parts[0] === 'fea') {
+                        serviceName = parts.join('/');
+                    } else if (parts[0] === 'rel') {
+                        serviceName = parts[0] + '/' + parts.slice(1, 4).join('.') + ' ' + parts.slice(4).join(' ')
+                    } else {
+                        serviceName = parts.join(' ');
+                    }
+
+                    if (serviceName !== 'fea/tulorekisteri') {
+                        serviceName = serviceName.replace(/[/]tulorekisteri$/, ' tulorekisteri');
+                    }
+                    serviceName = serviceName.replace(' tulorekisteri', ' (tulorekisteri)');
+                } catch(e) {
+                    serviceName = cloned.ServiceName || '';
+                }
 
                 let imageTag = "<div style='height: 100%; padding: 5px 5px 5px 5px; border: 2px solid " + color + "'>" +
-                    "<span class='contname' style='color: white; font-weight: bold;font-size: 12px'>" + serviceName + "</span>" +
+                    "<span class='contname " + icon + "' style='color: white; font-weight: bold;font-size: 12px'>" + serviceName + "</span>" +
+                    "<br /> name: " + (cloned.ServiceName || '') +
                     "<br/> image : " + imageNameMatches[0] +
                     "<br/> tag : " + (tagName ? tagName : "latest") +
                     "<br/>" + (cloned.Spec.ContainerSpec.Args ? " cmd : " + cloned.Spec.ContainerSpec.Args + "<br/>" : "") +

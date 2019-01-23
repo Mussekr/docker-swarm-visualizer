@@ -27,7 +27,7 @@
     content: '';
     width: 8px;
     height: 8px;
-    background: @green;
+    background: @gray-lighter;
     border-radius: 50%;
   }
 
@@ -96,7 +96,7 @@
 
   .node{
     float: left;
-    width: 200px;
+    width: 250px;
     margin-bottom: 20px;
     margin-right: 10px;
     &:last-child{
@@ -156,12 +156,21 @@
     .contname{
       .statuscont()
     }
+
     &[data-state='running']{
      // border-color: @state-1;
       //background-color: fade(@state-1,40%);
 
       .contname {
         .statuscontrun()
+      }
+
+      .contname.mysql:before {
+        background-color: orange;
+      }
+
+      .contname.php:before {
+        background-color: @green;
       }
     }
 
